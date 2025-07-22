@@ -7,6 +7,11 @@ server/node_modules/
 server/.env
 build/
 
+# client
+client/node_modules/
+client/.env
+build/
+
 # Logs
 *.log
 
