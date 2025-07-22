@@ -1,0 +1,15 @@
+# Node & Express
+node_modules/
+.env
+
+# Server
+server/node_modules/
+server/.env
+build/
+
+# Logs
+*.log
+
+# Mac / Windows / Linux system files
+.DS_Store
+Thumbs.db
