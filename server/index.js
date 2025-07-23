@@ -23,17 +23,16 @@ app.post("/show",async(req,res)=>{
       messages: [
         {
           role: "user",
-          content: "hello",
+          content: inp,
         },
       ],
       model: "llama-3.3-70b-versatile",
     })
     .then((chatCompletion) => {
-      console.log(chatCompletion.choices[0]?.message?.content || "");
+       res.status(200).json({ Message: chatCompletion.choices[0]?.message?.content });
     });
      } catch (error) {
           console.error(error);
-
      }
      
 })
