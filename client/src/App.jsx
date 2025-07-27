@@ -9,9 +9,10 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    const trimmed = input.trim();
+    if (!trimmed) return;
 
-    const userMessage = { from: 'user', text: input };
+    const userMessage = { from: 'user', text: trimmed };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
@@ -20,13 +21,14 @@ function App() {
       const res = await fetch('http://localhost:3001/show', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inp: input }),
+        body: JSON.stringify({ inp: trimmed }),
       });
 
       const data = await res.json();
-      setMessages((prev) => [...prev, { from: 'bot', text: data.Message || 'No response' }]);
+      const botReply = data?.Message || 'No response received.';
+      setMessages((prev) => [...prev, { from: 'bot', text: botReply }]);
     } catch (err) {
-      console.error(err);
+      console.error('Error:', err);
       setMessages((prev) => [...prev, { from: 'bot', text: 'Error fetching response.' }]);
     }
 
@@ -36,8 +38,10 @@ function App() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-200 p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md flex flex-col h-[600px]">
-        <div className="bg-gray-100 p-4 border-b flex items-center border-gray-300">
-          <img src="chatbot.png" alt="" className='w-10 h-10' />
+
+
+        <div className="bg-gray-100 p-4 border-b flex items-center gap-3 border-gray-300">
+          <img src="chatbot.png" alt="AI Bot" className="w-10 h-10" />
           <h1 className="text-xl font-bold text-gray-800">AI Assist</h1>
         </div>
 
@@ -45,25 +49,50 @@ function App() {
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`p-3 rounded-lg max-w-xs text-sm shadow ${
-                  msg.from === 'user' ? 'bg-blue-100' : 'bg-green-200'
+              className={`flex items-end gap-2 ${msg.from === 'user' ? 'justify-end' : 'justify-start'
                 }`}
+            >
+
+              {msg.from === 'bot' && (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+                  alt="bot avatar"
+                  className="w-8 h-8 rounded-full"
+                />
+              )}
+
+              <div
+                className={`p-3 rounded-lg max-w-xs text-sm shadow ${msg.from === 'user' ? 'bg-blue-100' : 'bg-green-200'
+                  }`}
               >
                 {msg.text}
               </div>
+
+              {msg.from === 'user' && (
+                <img
+                  src="boy.png"
+                  alt="user avatar"
+                  className="w-8 h-8 rounded-full"
+                />
+              )}
             </div>
           ))}
+
+
           {loading && (
-            <div className="flex justify-start">
+            <div className="flex items-end gap-2 justify-start">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+                alt="bot avatar"
+                className="w-8 h-8 rounded-full"
+              />
               <div className="p-3 bg-green-200 rounded-lg max-w-xs text-sm shadow animate-pulse">
                 Thinking...
               </div>
             </div>
           )}
         </div>
+
 
         <div className="border-t border-gray-300 p-3 flex items-center gap-2 bg-gray-50">
           <input
